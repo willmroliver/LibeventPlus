@@ -6,9 +6,11 @@
 
 namespace libev {
 
+class Event;
+
 class EventBase {
     private:
-        const std::unique_ptr<event_base> base;
+        event_base* base;
         std::unordered_map<evutil_socket_t, Event*> events;
 
     public:
