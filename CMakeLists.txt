@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.26)
-project(LibeventPlus VERSION 1.0)
+project(LibeventPlus VERSION 1.0 DESCRIPTION "A minimal C++ wrapper for core parts of the Libevent library")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
@@ -23,3 +23,15 @@ target_link_libraries(
         PUBLIC
             libevent::core
 )
+
+install(TARGETS LibeventPlus DESTINATION bin)
+install(FILES include/event-base.hpp include/event.hpp DESTINATION include)
+
+include(InstallRequiredSystemLibraries)
+
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/license.txt")
+set(CPACK_PACKAGE_VERSION_MAJOR "${LibeventPlus_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${LibeventPlus_VERSION_MINOR}")
+set(CPACK_SOURCE_GENERATOR "TGZ")
+
+include(CPack)
