@@ -1,3 +1,6 @@
+#ifndef INCLUDE_EVENT_HPP
+#define INCLUDE_EVENT_HPP
+
 #include <event2/event.h>
 
 #include "event-base.hpp"
@@ -6,7 +9,7 @@ namespace libev {
 
 class Event {
     private:
-        std::unique_ptr<event> ev;
+        event* ev;
 
     public:
         Event(event_base* base, evutil_socket_t fd, short flags, event_callback_fn cb, void* args);
@@ -25,3 +28,5 @@ class Event {
 };
 
 }
+
+#endif
