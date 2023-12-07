@@ -3,6 +3,7 @@ project(LibeventPlus VERSION 1.0 DESCRIPTION "A minimal C++ wrapper for core par
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
+set(CMAKE_INSTALL_PREFIX "libeventplus")
 
 find_package(Libevent REQUIRED)
 
@@ -15,7 +16,8 @@ add_library(
 target_include_directories(
     LibeventPlus
         PUBLIC
-            include
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:include>
 )
 
 target_link_libraries(
@@ -23,9 +25,6 @@ target_link_libraries(
         PUBLIC
             libevent::core
 )
-
-install(TARGETS LibeventPlus DESTINATION bin)
-install(FILES include/event-base.hpp include/event.hpp DESTINATION include)
 
 include(InstallRequiredSystemLibraries)
 
@@ -35,3 +34,61 @@ set(CPACK_PACKAGE_VERSION_MINOR "${LibeventPlus_VERSION_MINOR}")
 set(CPACK_SOURCE_GENERATOR "TGZ")
 
 include(CPack)
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+
+set_target_properties(
+    LibeventPlus 
+        PROPERTIES
+            POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS}
+)
+
+install(
+    TARGETS LibeventPlus 
+    EXPORT LibeventPlusTargets
+    DESTINATION bin
+)
+
+install(
+    FILES include/event-base.hpp include/event.hpp 
+    DESTINATION include
+)
+
+install(
+    EXPORT LibeventPlusTargets
+    FILE LibeventPlusTargets.cmake
+    DESTINATION lib/cmake/LibeventPlus
+)
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/LibeventPlusConfig.cmake"
+    INSTALL_DESTINATION "libeventplus/lib/cmake/example"
+    NO_SET_AND_CHECK_MACRO
+    NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
+
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/LibeventPlusConfigVersion.cmake"
+  VERSION "${LibeventPlus_VERSION_MAJOR}.${LibeventPlus_VERSION_MINOR}"
+  COMPATIBILITY AnyNewerVersion
+)
+
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/LibeventPlusConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/LibeventPlusConfigVersion.cmake
+    DESTINATION
+        lib/cmake/LibeventPlus
+)
+
+export(
+    EXPORT LibeventPlusTargets
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/LibeventPlusTargets.cmake"
+)

@@ -4,6 +4,10 @@
 
 A simple C++ wrapper for the Libevent portable polling solution. Only basic Libevent functionality has been included to meet personal requirements.
 
+### Installation
+
+
+
 ### How to use
 
 Most function names have been kept close to their Libevent counterparts.
