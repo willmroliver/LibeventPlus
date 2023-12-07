@@ -3,7 +3,14 @@ project(LibeventPlus VERSION 1.0 DESCRIPTION "A minimal C++ wrapper for core par
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
-set(CMAKE_INSTALL_PREFIX "libeventplus")
+
+if (WIN32)
+    set(CMAKE_INSTALL_PREFIX "c:/Program Files/libeventplus")
+endif (WIN32)
+
+if (UNIX)
+    set(CMAKE_INSTALL_PREFIX "/usr/local/libeventplus")
+endif(UNIX)
 
 find_package(Libevent REQUIRED)
 
