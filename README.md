@@ -15,6 +15,12 @@ To install as a shared library (using CMake):
 3. Execute the following line: `cmake --install .`
 4. For UNIX, this will install to `/usr/local/libeventplus`. For WIN32, `c:/Program Files/libeventplus`
 
+You should be able to include this in other CMake projects:
+```cmake
+find_package(Libevent REQUIRED)     # Required as a dependency but will not need to be linked
+find_package(LibeventPlus)          # Link against this library 
+```
+
 ### How to use
 
 Most function names have been kept close to their Libevent counterparts.
