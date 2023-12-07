@@ -6,7 +6,14 @@ A simple C++ wrapper for the Libevent portable polling solution. Only basic Libe
 
 ### Installation
 
+To install as a static library, either fork this repository or download the install script and identically named tar package in /build.
 
+To install as a shared library (using CMake):
+
+1. Download the *-Source.tar.gz package and unzip anywhere
+2. From the command line, navigate to the build folder.
+3. Execute the following line: `cmake --install .`
+4. For UNIX, this will install to `/usr/local/libeventplus`. For WIN32, `c:/Program Files/libeventplus`
 
 ### How to use
 
