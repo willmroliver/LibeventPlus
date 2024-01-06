@@ -6,7 +6,12 @@ A simple C++ wrapper for the Libevent portable polling solution. Only basic Libe
 
 ### Installation
 
-To install as a shared library (using CMake):
+- Install pre-built library
+
+1. Download the *-Darwin.tar.gz package in `/build`
+2. Unzip in a directory of your choosing
+
+- Build from source (with CMake)
 
 1. Download the *-Source.tar.gz package and unzip anywhere
 2. From the command line, navigate to the build folder.
