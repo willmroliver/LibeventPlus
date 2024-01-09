@@ -10,18 +10,29 @@ EventBase::EventBase():
     base { event_base_new() } 
 {}
 
+EventBase::EventBase(EventBase&& eb): 
+    base { eb.base }
+{
+    eb.base = nullptr;
+}
+
 EventBase::~EventBase() {
     event_base_free(base);
 }
 
-Event* EventBase::new_event(evutil_socket_t fd, short what, event_callback_fn cb) {
-    events[fd] = new Event(base, fd, what, cb, event_self_cbarg());
-    return events[fd];
+EventBase& EventBase::operator=(EventBase&& eb) {
+    base = eb.base;
+    eb.base = nullptr;
+    
+    return *this;
 }
 
-Event* EventBase::new_event(evutil_socket_t fd, short what, event_callback_fn cb, void *arg) {
-    events[fd] = new Event(base, fd, what, cb, arg);
-    return events[fd];
+Event EventBase::new_event(evutil_socket_t fd, short what, event_callback_fn cb) {
+    return { base, fd, what, cb, event_self_cbarg() };
+}
+
+Event EventBase::new_event(evutil_socket_t fd, short what, event_callback_fn cb, void *arg) {
+    return { base, fd, what, cb, arg };
 }
 
 int EventBase::run() {

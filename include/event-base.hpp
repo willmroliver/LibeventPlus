@@ -11,17 +11,18 @@ class Event;
 class EventBase {
     private:
         event_base* base;
-        std::unordered_map<evutil_socket_t, Event*> events;
 
     public:
         EventBase();
         EventBase(EventBase& eb) = delete;
-        EventBase& operator=(EventBase eb) = delete;
-        EventBase(EventBase&& eb) = default;
+        EventBase(EventBase&& eb);
         ~EventBase();
 
-        Event* new_event(evutil_socket_t fd, short what, event_callback_fn cb);
-        Event* new_event(evutil_socket_t fd, short what, event_callback_fn cb, void *arg);
+        EventBase& operator=(EventBase& eb) = delete;
+        EventBase& operator=(EventBase&& eb);
+
+        Event new_event(evutil_socket_t fd, short what, event_callback_fn cb);
+        Event new_event(evutil_socket_t fd, short what, event_callback_fn cb, void *arg);
         int run();
         int run(bool once, bool blocking, bool exit_on_empty);
         bool loopexit();
