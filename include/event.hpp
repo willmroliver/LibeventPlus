@@ -15,9 +15,11 @@ class Event {
         Event(event_base* base, evutil_socket_t fd, short flags, event_callback_fn cb, void* args);
         Event(event* ev);
         Event(Event& e) = delete;
-        Event& operator=(Event& e) = delete;
-        Event(Event&& e) = default;
+        Event(Event&& e);
         ~Event();
+
+        Event& operator=(Event& e) = delete;
+        Event& operator=(Event&& e);
 
         bool add();
         bool add(const timeval* tv);
