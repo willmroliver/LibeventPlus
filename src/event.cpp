@@ -12,8 +12,18 @@ Event::Event(event_base* base, evutil_socket_t fd, short what, event_callback_fn
 
 Event::Event(event* ev): ev { ev } {};
 
+Event::Event(Event&& e): ev { e.ev } {
+    e.ev = nullptr;
+}
+
 Event::~Event() {
     event_free(ev);
+}
+
+Event& Event::operator=(Event&& e) {
+    ev = e.ev;
+    e.ev = nullptr;
+    return *this;
 }
 
 bool Event::add() {
