@@ -14,11 +14,11 @@ A simple C++ wrapper for the Libevent portable polling solution. Only basic Libe
 - Build from source (with CMake)
 
 1. Download the *-Source.tar.gz package and unzip anywhere
-2. From the command line, navigate to the build folder.
-3. Execute the following line: `cmake --install .`
-4. For UNIX, this will install to `/usr/local/libeventplus`. For WIN32, `c:/Program Files/libeventplus`
+2. From the command line, navigate to the build folder
+3. Execute the following line: `cmake --install . --prefix "[INSTALL_DIR]"`
 
 You should then be able to use the CMake find_package command:
+
 ```cmake
 find_package(Libevent REQUIRED)     # Required as a dependency but will not need to be linked
 find_package(LibeventPlus)          # Link against this library 

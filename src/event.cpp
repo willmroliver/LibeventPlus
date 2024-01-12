@@ -7,22 +7,69 @@
 using namespace libev;
 
 Event::Event(event_base* base, evutil_socket_t fd, short what, event_callback_fn cb, void* arg):
-    ev { event_new(base, fd, what, cb, arg) }
+    base { base },
+    ev { event_new(base, fd, what, cb, arg) },
+    fd { fd },
+    what { what },
+    cb { cb },
+    arg { arg }
 {}
 
-Event::Event(event* ev): ev { ev } {};
+Event::Event(event* ev) {
+    event_base* base;
+    evutil_socket_t fd;
+    short what;
+    event_callback_fn cb;
+    void* arg;
 
-Event::Event(Event&& e): ev { e.ev } {
+    event_get_assignment(ev, &base, &fd, &what, &cb, &arg);
+}
+
+Event::Event(Event& e) {
+    ev = event_new(e.base, e.fd, e.what, e.cb, e.arg);
+    event_get_assignment(ev, &base, &fd, &what, &cb, &arg);
+}
+
+Event::Event(Event&& e):
+    base { e.base },
+    ev { e.ev },
+    fd { e.fd },
+    what { e.what },
+    cb { e.cb },
+    arg { e.arg }
+{
+    e.base = nullptr;
     e.ev = nullptr;
+    e.fd = 0;
+    e.what = 0;
+    e.arg = nullptr;
 }
 
 Event::~Event() {
     event_free(ev);
 }
 
+Event& Event::operator=(Event& e) {
+    ev = event_new(e.base, e.fd, e.what, e.cb, e.arg);
+    event_get_assignment(ev, &base, &fd, &what, &cb, &arg);
+
+    return *this;
+}
+
 Event& Event::operator=(Event&& e) {
+    base = e.base;
     ev = e.ev;
+    fd = e.fd;
+    what = e.what;
+    cb = e.cb;
+    arg = e.arg;
+
+    e.base = nullptr;
     e.ev = nullptr;
+    e.fd = 0;
+    e.what = 0;
+    e.arg = nullptr;
+    
     return *this;
 }
 
