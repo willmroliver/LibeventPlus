@@ -46,7 +46,9 @@ Event::Event(Event&& e):
 }
 
 Event::~Event() {
-    event_free(ev);
+    if (ev != nullptr) {
+        event_free(ev);
+    }
 }
 
 Event& Event::operator=(Event& e) {
