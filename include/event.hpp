@@ -18,14 +18,13 @@ class Event {
 
     public:
         Event(event_base* base, evutil_socket_t fd, short what, event_callback_fn cb, void* args);
-        Event(event* event);
         Event(Event& e);
         Event(Event&& e);
         ~Event();
 
         Event& operator=(Event& e);
         Event& operator=(Event&& e);
-
+        
         bool add();
         bool add(const timeval* tv);
         bool remove();

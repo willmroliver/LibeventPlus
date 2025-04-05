@@ -17,7 +17,9 @@ EventBase::EventBase(EventBase&& eb):
 }
 
 EventBase::~EventBase() {
-    event_base_free(base);
+    if (base != nullptr) {
+        event_base_free(base);
+    }
 }
 
 EventBase& EventBase::operator=(EventBase&& eb) {

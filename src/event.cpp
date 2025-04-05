@@ -15,19 +15,11 @@ Event::Event(event_base* base, evutil_socket_t fd, short what, event_callback_fn
     arg { arg }
 {}
 
-Event::Event(event* ev) {
-    event_base* base;
-    evutil_socket_t fd;
-    short what;
-    event_callback_fn cb;
-    void* arg;
-
-    event_get_assignment(ev, &base, &fd, &what, &cb, &arg);
-}
-
 Event::Event(Event& e) {
-    ev = event_new(e.base, e.fd, e.what, e.cb, e.arg);
-    event_get_assignment(ev, &base, &fd, &what, &cb, &arg);
+    if (ev != nullptr) {
+        ev = event_new(e.base, e.fd, e.what, e.cb, e.arg);
+        event_get_assignment(ev, &base, &fd, &what, &cb, &arg);
+    }
 }
 
 Event::Event(Event&& e):
@@ -52,6 +44,15 @@ Event::~Event() {
 }
 
 Event& Event::operator=(Event& e) {
+    if (e.ev == nullptr || e.base == nullptr) {
+        ev = nullptr;
+        base = nullptr;
+        what = 0;
+        arg = nullptr;
+
+        return *this;
+    }
+
     ev = event_new(e.base, e.fd, e.what, e.cb, e.arg);
     event_get_assignment(ev, &base, &fd, &what, &cb, &arg);
 
@@ -76,25 +77,49 @@ Event& Event::operator=(Event&& e) {
 }
 
 bool Event::add() {
+    if (ev == nullptr) {
+        return false;
+    }
+    
     return event_add(ev, nullptr) == 0;
 }
 
 bool Event::add(const timeval* tv) {
+    if (ev == nullptr) {
+        return false;
+    }
+
     return event_add(ev, tv) == 0;
 }
 
 bool Event::remove() {
+    if (ev == nullptr) {
+        return false;
+    }
+
     return event_del(ev) == 0;
 }
 
 bool Event::set_priority(int priority) {
+    if (ev == nullptr) {
+        return false;
+    }
+
     return event_priority_set(ev, priority) == 0;
 }
 
 bool Event::is_active(short flags) {
+    if (ev == nullptr) {
+        return false;
+    }
+    
     return event_pending(ev, flags, nullptr);
 }
 
 bool Event::is_active(short flags, timeval* tv_out) {
+    if (ev == nullptr) {
+        return false;
+    }
+    
     return event_pending(ev, flags, tv_out);
 }
